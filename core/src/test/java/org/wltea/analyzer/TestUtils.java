@@ -31,30 +31,6 @@ public class TestUtils {
         return hexList.toArray(new String[0]);
     }
 
-    public static String[] tokenize(Configuration configuration, String s)
-    {
-        ArrayList<String> tokens = new ArrayList<>();
-        try (IKAnalyzer ikAnalyzer = new IKAnalyzer(configuration)) {
-            TokenStream tokenStream = ikAnalyzer.tokenStream("text", s);
-            tokenStream.reset();
-
-            while(tokenStream.incrementToken())
-            {
-                CharTermAttribute charTermAttribute = tokenStream.getAttribute(CharTermAttribute.class);
-                OffsetAttribute offsetAttribute = tokenStream.getAttribute(OffsetAttribute.class);
-                int len = offsetAttribute.endOffset()-offsetAttribute.startOffset();
-                char[] chars = new char[len];
-                System.arraycopy(charTermAttribute.buffer(), 0, chars, 0, len);
-                tokens.add(new String(chars));
-            }
-        }
-        catch (Exception ex)
-        {
-            throw new RuntimeException(ex);
-        }
-        return  tokens.toArray(new String[0]);
-    }
-
     /**
      * ES插件需要指向ES的配置目录，这里使用当前项目的config目录作为配置目录，避免依赖计算机上安装ES
      */
