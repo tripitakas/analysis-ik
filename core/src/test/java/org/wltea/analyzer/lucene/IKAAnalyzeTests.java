@@ -1,7 +1,8 @@
-package org.wltea.analyzer.cfg;
-
+package org.wltea.analyzer.lucene;
 
 import org.junit.Test;
+import org.wltea.analyzer.cfg.Configuration;
+import org.wltea.analyzer.TestUtils;
 
 public class IKAAnalyzeTests {
 
