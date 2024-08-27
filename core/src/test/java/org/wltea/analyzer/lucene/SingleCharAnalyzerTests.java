@@ -27,7 +27,7 @@ public class SingleCharAnalyzerTests {
     static String[] tokenize(Configuration configuration, String s)
     {
         ArrayList<String> tokens = new ArrayList<>();
-        try (SingleCharAnalyzer analyzer = new SingleCharAnalyzer(configuration)) {
+        try (SingleCharAnalyzer analyzer = new SingleCharAnalyzer()){//configuration)) {
             TokenStream tokenStream = analyzer.tokenStream("text", s);
             tokenStream.reset();
 
