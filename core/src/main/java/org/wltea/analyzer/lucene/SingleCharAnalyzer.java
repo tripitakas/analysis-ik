@@ -24,27 +24,35 @@
  */
 package org.wltea.analyzer.lucene;
 
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Tokenizer;
+import org.apache.lucene.analysis.*;
+import org.apache.lucene.analysis.cjk.CJKAnalyzer;
+import org.apache.lucene.util.IOUtils;
 import org.wltea.analyzer.cfg.Configuration;
 
-public final class SingleCharAnalyzer extends Analyzer{
-
-	private Configuration configuration;
-
-	public SingleCharAnalyzer(){
+public final class SingleCharAnalyzer extends StopwordAnalyzerBase {
+	@Override
+	protected TokenStreamComponents createComponents(String s) {
+		return null;
 	}
-
-	public SingleCharAnalyzer(Configuration configuration){
-		super();
-        this.configuration = configuration;
+/*
+	public SingleCharAnalyzer(CharArraySet stopwords) {
+		super(stopwords);
 	}
-
 
 	@Override
 	protected TokenStreamComponents createComponents(String fieldName) {
-        Tokenizer tokenizer = new SingleCharTokenizer(configuration);
-		return new TokenStreamComponents(tokenizer);
-    }
+		final Tokenizer source = new StandardTokenizer();
+		// run the widthfilter first before bigramming, it sometimes combines characters.
+		TokenStream result = new CJKWidthFilter(source);
+		result = new LowerCaseFilter(result);
+		result = new CJKBigramFilter(result);
+		return new TokenStreamComponents(source, new StopFilter(result, stopwords));
+	}
 
+	@Override
+	protected TokenStream normalize(String fieldName, TokenStream in) {
+		TokenStream result = new CJKWidthFilter(in);
+		result = new LowerCaseFilter(result);
+		return result;
+	}*/
 }
