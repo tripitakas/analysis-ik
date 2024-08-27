@@ -1,9 +1,8 @@
-package com.infinilabs.ik.elasticsearch;
+package org.wltea.analyzer.cfg;
 
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
-import org.wltea.analyzer.cfg.Configuration;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 import java.io.IOException;
