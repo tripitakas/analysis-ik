@@ -37,6 +37,9 @@ import org.wltea.analyzer.core.SingleCharSegmenter;
 
 import java.io.IOException;
 
+/**
+ * 基于IKTokenizer改造，只是把IKTokenizer中的IKSegmenter替换成了SingleCharSegmenter
+ */
 public final class SingleCharTokenizer extends Tokenizer {
 
 	//IK分词器实现

@@ -13,7 +13,6 @@ public class SingleCharAnalyzerTests {
     @Test
     public void tokenizeCase1_correctly()
     {
-        /*
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
         String[] values = tokenize(cfg, "菩\uDB84\uDD2E龟龙麟凤");
         assert values.length == 6;
@@ -21,14 +20,31 @@ public class SingleCharAnalyzerTests {
         assert values[1].equals("\uDB84\uDD2E");
         assert values[2].equals("龟");
         assert values[3].equals("龙");
-        assert values[5].equals("麟");
-        assert values[6].equals("凤");*/
+        assert values[4].equals("麟");
+        assert values[5].equals("凤");
+    }
+
+    /**
+     * 含有中英文标点
+     */
+    @Test
+    public void tokenizeCase2_correctly()
+    {
+        Configuration cfg = TestUtils.createFakeConfigurationSub(false);
+        String[] values = tokenize(cfg, "菩！\uDB84\uDD2E，龟:龙。麟,凤");
+        assert values.length == 6;
+        assert values[0].equals("菩");
+        assert values[1].equals("\uDB84\uDD2E");
+        assert values[2].equals("龟");
+        assert values[3].equals("龙");
+        assert values[4].equals("麟");
+        assert values[5].equals("凤");
     }
 
     static String[] tokenize(Configuration configuration, String s)
     {
         ArrayList<String> tokens = new ArrayList<>();
-        try (SingleCharAnalyzer analyzer = new SingleCharAnalyzer()){//configuration)) {
+        try (SingleCharAnalyzer analyzer = new SingleCharAnalyzer(configuration)) {
             TokenStream tokenStream = analyzer.tokenStream("text", s);
             tokenStream.reset();
 
