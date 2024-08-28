@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 public class TestUtils {
 
-    public static Configuration createFakeConfigurationSub() {
-        FakeConfigurationSub configurationSub = new FakeConfigurationSub();
+    public static Configuration createFakeConfigurationSub(boolean useSmart) {
+        FakeConfigurationSub configurationSub = new FakeConfigurationSub(useSmart);
         Dictionary.initial(configurationSub);
         return configurationSub;
     }
@@ -36,8 +36,8 @@ public class TestUtils {
      */
     static class FakeConfigurationSub extends Configuration
     {
-        public FakeConfigurationSub() {
-
+        public FakeConfigurationSub(boolean useSmart) {
+            this.useSmart = useSmart;
         }
 
         @Override
