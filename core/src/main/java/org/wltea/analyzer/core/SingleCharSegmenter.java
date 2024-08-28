@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 如是增加.
+ * 如是基于IKSegmenter改造，只是把CJKSegmenter、QuantifierSegmenter删除
+ * todo: 提交PR，让IKSegmenter为非final类，并且把loadSegmenters搞成虚方法，这样我们这个类只要继承IKSegmenter即可
  * 考虑Surrogate Pair的单字符分词器，一个Surrogate Pair是一个Unicode字符，由两个16位的char组成。
+ *
  */
 public final class SingleCharSegmenter {
     //字符窜reader
@@ -18,10 +20,15 @@ public final class SingleCharSegmenter {
     private AnalyzeContext context;
     //分词处理器列表
     private List<ISegmenter> segmenters;
-
+    //分词歧义裁决器
+    private IKArbitrator arbitrator;
     private Configuration configuration;
 
 
+    /**
+     * IK分词器构造函数
+     * @param input
+     */
     public SingleCharSegmenter(Reader input ,Configuration configuration){
         this.input = input;
         this.configuration = configuration;
@@ -29,11 +36,16 @@ public final class SingleCharSegmenter {
     }
 
 
+    /**
+     * 初始化
+     */
     private void init(){
         //初始化分词上下文
         this.context = new AnalyzeContext(configuration);
         //加载子分词器
         this.segmenters = this.loadSegmenters();
+        //加载歧义裁决器
+        this.arbitrator = new IKArbitrator();
     }
 
     /**
@@ -42,8 +54,12 @@ public final class SingleCharSegmenter {
      */
     private List<ISegmenter> loadSegmenters(){
         List<ISegmenter> segmenters = new ArrayList<ISegmenter>(4);
+        //处理字母的子分词器
+        segmenters.add(new LetterSegmenter());
         //处理由两个char组成的SurrogatePair
         segmenters.add(new SurrogatePairSegmenter());
+        //处理中文词的子分词器
+        //segmenters.add(new CJKSegmenter());
         return segmenters;
     }
 
@@ -52,7 +68,7 @@ public final class SingleCharSegmenter {
      * @return Lexeme 词元对象
      * @throws java.io.IOException
      */
-    public synchronized Lexeme next()throws IOException {
+    public synchronized Lexeme next()throws IOException{
         Lexeme l = null;
         while((l = context.getNextLexeme()) == null ){
             /*
@@ -85,6 +101,8 @@ public final class SingleCharSegmenter {
                     segmenter.reset();
                 }
             }
+            //对分词进行歧义处理
+            this.arbitrator.process(context, configuration.isUseSmart());
             //将分词结果输出到结果集，并处理未切分的单个CJK字符
             context.outputToResult();
             //记录本次分词的缓冲区位移

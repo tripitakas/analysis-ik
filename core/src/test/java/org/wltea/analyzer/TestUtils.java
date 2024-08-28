@@ -1,17 +1,10 @@
 package org.wltea.analyzer;
 
-import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
-import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
-import org.apache.lucene.analysis.TokenStream;
-
 import org.wltea.analyzer.cfg.Configuration;
 import org.wltea.analyzer.dic.Dictionary;
-import org.wltea.analyzer.lucene.IKAnalyzer;
-
 import java.io.File;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.ArrayList;
 
 public class TestUtils {
 
@@ -19,16 +12,6 @@ public class TestUtils {
         FakeConfigurationSub configurationSub = new FakeConfigurationSub(useSmart);
         Dictionary.initial(configurationSub);
         return configurationSub;
-    }
-
-    public static String[] convertCharArrayToHex(char[] charArray) {
-        ArrayList<String> hexList = new ArrayList<>(charArray.length);
-        for (int i = 0; i < charArray.length; i++) {
-            char ch = charArray[i];
-            if(ch==0) break;
-            hexList.add(String.format("%04x", (int) ch));
-        }
-        return hexList.toArray(new String[0]);
     }
 
     /**
