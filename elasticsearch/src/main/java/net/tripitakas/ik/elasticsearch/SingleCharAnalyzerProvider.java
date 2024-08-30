@@ -6,17 +6,17 @@ import org.elasticsearch.env.Environment;
 import org.elasticsearch.index.IndexSettings;
 import org.elasticsearch.index.analysis.AbstractIndexAnalyzerProvider;
 import org.wltea.analyzer.cfg.Configuration;
-import org.wltea.analyzer.lucene.IKAnalyzer;
+import org.wltea.analyzer.lucene.SingleCharAnalyzer;
 
-public class SingleCharAnalyzerProvider extends AbstractIndexAnalyzerProvider<IKAnalyzer> {
-    private final IKAnalyzer analyzer;
+public class SingleCharAnalyzerProvider extends AbstractIndexAnalyzerProvider<SingleCharAnalyzer> {
+    private final SingleCharAnalyzer analyzer;
 
     public SingleCharAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
         super(name, settings);
 
         Configuration configuration = new ConfigurationSub(env,settings);
 
-        analyzer=new IKAnalyzer(configuration);
+        analyzer=new SingleCharAnalyzer(configuration);
     }
 
     public static SingleCharAnalyzerProvider getSingleCharAnalyzerProvider(IndexSettings indexSettings, Environment env, String name, Settings settings) {
@@ -24,7 +24,7 @@ public class SingleCharAnalyzerProvider extends AbstractIndexAnalyzerProvider<IK
     }
 
 
-    @Override public IKAnalyzer get() {
+    @Override public SingleCharAnalyzer get() {
         return this.analyzer;
     }
 }
