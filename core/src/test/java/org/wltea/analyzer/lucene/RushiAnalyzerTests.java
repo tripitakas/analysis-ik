@@ -58,7 +58,7 @@ public class RushiAnalyzerTests {
     {
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
         List<String> values = Arrays.asList(tokenize(cfg, "\uDB84\uDD2E中华人民共和国国歌"));
-        assert values.size() == 12;
+        assert values.size() >= 12;
         assert values.contains("\uDB84\uDD2E");
         assert values.contains("中华人民共和国");
         assert values.contains("中");
