@@ -10,12 +10,10 @@ import java.util.Queue;
 
 public class RushiSegmenter {
     private final IKSegmenter ikSegmenter;
-    private final Configuration configuration;
     //用栈来保存之前的词
     private final Queue<Lexeme> lexemeQueue = new LinkedList<Lexeme>();
     public RushiSegmenter(Reader input , Configuration configuration) {
         this.ikSegmenter = new IKSegmenter(input, configuration);
-        this.configuration = configuration;
     }
 
     public synchronized void reset(Reader input) {
@@ -34,13 +32,16 @@ public class RushiSegmenter {
                 String[] chars = SurrogatePairHelper.splitIntoChars(lexemeText);
                 for (int i=0; i<chars.length; i++) {
                     String aChar = chars[i];
-                    int offset = next.getBegin() + i;
-                    int begin = next.getOffset()+i;
+                    int offset = next.getOffset();
+                    int begin = next.getBegin()+i;
                     int length = aChar.length();
                     int lexemeType = next.getLexemeType();
                     Lexeme lexeme = new Lexeme(offset, begin, length, lexemeType);
                     lexeme.setLexemeText(aChar);
-                    lexemeQueue.add(lexeme);
+                    if(!lexemeQueue.contains(lexeme))
+                    {
+                        lexemeQueue.add(lexeme);
+                    }
                 }
             }
             return next;
