@@ -18,16 +18,57 @@ public class RushiAnalyzerTests {
      * 单char汉字和多个连续Surrogate Pair加词库中的词
      */
     @Test
-    public void tokenizeCase1_correctly()
+    public void tokenizeCase1_smart_correctly()
+    {
+        Configuration cfg = TestUtils.createFakeConfigurationSub(true);
+        List<String> values = Arrays.asList(tokenize(cfg, "菩\uDB84\uDD2E龟龙麟凤"));
+        assert values.size() == 7;
+        assert values.contains("菩");
+        assert values.contains("\uDB84\uDD2E");
+        assert values.contains("龟龙麟凤");
+        assert values.contains("龟");
+        assert values.contains("龙");
+        assert values.contains("麟");
+        assert values.contains("凤");
+    }
+
+    /**
+     * 单char汉字和多个连续Surrogate Pair加词库中的词
+     */
+    @Test
+    public void tokenizeCase2_smart_correctly()
+    {
+        Configuration cfg = TestUtils.createFakeConfigurationSub(true);
+        List<String> values = Arrays.asList(tokenize(cfg, "\uDB84\uDD2E中华人民共和国国歌"));
+        assert values.size() == 12;
+        assert values.contains("\uDB84\uDD2E");
+        assert values.contains("中华人民共和国");
+        assert values.contains("中");
+        assert values.contains("华");
+        assert values.contains("人");
+        assert values.contains("民");
+        assert values.contains("共");
+        assert values.contains("和");
+        assert values.contains("国");
+        assert values.contains("歌");
+    }
+
+    @Test
+    public void tokenizeCase2_max_word_correctly()
     {
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
-        String[] values = tokenize(cfg, "菩\uDB84\uDD2E龟龙麟凤凤");
-        assert values.length == 5;
-        assert values[0].equals("菩");
-        assert values[1].equals("\uDB84\uDD2E");
-        assert values[2].equals("龟龙麟凤");
-        assert values[3].equals("凤");
-        assert values[4].equals("哈哈");
+        List<String> values = Arrays.asList(tokenize(cfg, "\uDB84\uDD2E中华人民共和国国歌"));
+        assert values.size() == 12;
+        assert values.contains("\uDB84\uDD2E");
+        assert values.contains("中华人民共和国");
+        assert values.contains("中");
+        assert values.contains("华");
+        assert values.contains("人");
+        assert values.contains("民");
+        assert values.contains("共");
+        assert values.contains("和");
+        assert values.contains("国");
+        assert values.contains("歌");
     }
 
     static String[] tokenize(Configuration configuration, String s)
