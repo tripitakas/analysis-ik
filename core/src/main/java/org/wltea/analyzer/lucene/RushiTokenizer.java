@@ -6,20 +6,16 @@ import org.apache.lucene.analysis.tokenattributes.OffsetAttribute;
 import org.apache.lucene.analysis.tokenattributes.PositionIncrementAttribute;
 import org.apache.lucene.analysis.tokenattributes.TypeAttribute;
 import org.wltea.analyzer.cfg.Configuration;
-import org.wltea.analyzer.core.BigBangSegmenter;
-import org.wltea.analyzer.core.IKSegmenter;
+import org.wltea.analyzer.core.RushiSegmenter;
 import org.wltea.analyzer.core.Lexeme;
 
 import java.io.IOException;
 
-/**
- * IK分词器 Lucene Tokenizer适配器类
- * 兼容Lucene 4.0版本
- */
+//todo: 封装一个抽象的 Tokenizer出来，避免RushiTokenizer和SingleCharTokenizer的重复代码。并且提交到ik
 public final class RushiTokenizer extends Tokenizer {
 
 	//IK分词器实现
-	private final BigBangSegmenter _IKImplement;
+	private final RushiSegmenter _IKImplement;
 
 	//词元文本属性
 	private final CharTermAttribute termAtt;
@@ -45,7 +41,7 @@ public final class RushiTokenizer extends Tokenizer {
 		typeAtt = addAttribute(TypeAttribute.class);
 		posIncrAtt = addAttribute(PositionIncrementAttribute.class);
 
-		_IKImplement = new BigBangSegmenter(input,configuration);
+		_IKImplement = new RushiSegmenter(input,configuration);
 	}
 
 	/* (non-Javadoc)
