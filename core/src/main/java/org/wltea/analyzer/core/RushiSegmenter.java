@@ -20,6 +20,7 @@ public class RushiSegmenter {
     public synchronized void reset(Reader input) {
         ikSegmenter.reset(input);
         lexemeQueue.clear();
+        lexemeSetReturned.clear();
     }
 
     public synchronized Lexeme next()throws IOException {
