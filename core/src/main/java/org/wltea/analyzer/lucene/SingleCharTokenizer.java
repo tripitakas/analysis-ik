@@ -43,7 +43,7 @@ import java.io.IOException;
 public final class SingleCharTokenizer extends Tokenizer {
 
 	//IK分词器实现
-	private SingleCharSegmenter _segmenter;
+	private SingleCharSegmenter segmenter;
 
 	//词元文本属性
 	private final CharTermAttribute termAtt;
@@ -69,7 +69,7 @@ public final class SingleCharTokenizer extends Tokenizer {
 	    typeAtt = addAttribute(TypeAttribute.class);
         posIncrAtt = addAttribute(PositionIncrementAttribute.class);
 
-        _segmenter = new SingleCharSegmenter(input,configuration);
+        segmenter = new SingleCharSegmenter(input,configuration);
 	}
 
 	/* (non-Javadoc)
@@ -81,7 +81,7 @@ public final class SingleCharTokenizer extends Tokenizer {
 		clearAttributes();
         skippedPositions = 0;
 
-        Lexeme nextLexeme = _segmenter.next();
+        Lexeme nextLexeme = segmenter.next();
 		if(nextLexeme != null){
             posIncrAtt.setPositionIncrement(skippedPositions +1 );
 
@@ -111,7 +111,7 @@ public final class SingleCharTokenizer extends Tokenizer {
 	@Override
 	public void reset() throws IOException {
 		super.reset();
-		_segmenter.reset(input);
+		segmenter.reset(input);
         skippedPositions = 0;
 		endPosition = 0;
 	}	
@@ -120,7 +120,7 @@ public final class SingleCharTokenizer extends Tokenizer {
 	public final void end() throws IOException {
         super.end();
 	    // set final offset
-		int finalOffset = correctOffset(this.endPosition+ _segmenter.getLastUselessCharNum());
+		int finalOffset = correctOffset(this.endPosition+ segmenter.getLastUselessCharNum());
 		offsetAtt.setOffset(finalOffset, finalOffset);
         posIncrAtt.setPositionIncrement(posIncrAtt.getPositionIncrement() + skippedPositions);
 	}

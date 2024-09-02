@@ -15,7 +15,7 @@ import java.io.IOException;
 public final class RushiTokenizer extends Tokenizer {
 
 	//IK分词器实现
-	private final RushiSegmenter _IKImplement;
+	private final RushiSegmenter segmenter;
 
 	//词元文本属性
 	private final CharTermAttribute termAtt;
@@ -41,7 +41,7 @@ public final class RushiTokenizer extends Tokenizer {
 		typeAtt = addAttribute(TypeAttribute.class);
 		posIncrAtt = addAttribute(PositionIncrementAttribute.class);
 
-		_IKImplement = new RushiSegmenter(input,configuration);
+		segmenter = new RushiSegmenter(input,configuration);
 	}
 
 	/* (non-Javadoc)
@@ -53,7 +53,7 @@ public final class RushiTokenizer extends Tokenizer {
 		clearAttributes();
 		skippedPositions = 0;
 
-		Lexeme nextLexeme = _IKImplement.next();
+		Lexeme nextLexeme = segmenter.next();
 		if(nextLexeme != null){
 			posIncrAtt.setPositionIncrement(skippedPositions +1 );
 
@@ -83,7 +83,7 @@ public final class RushiTokenizer extends Tokenizer {
 	@Override
 	public void reset() throws IOException {
 		super.reset();
-		_IKImplement.reset(input);
+		segmenter.reset(input);
 		skippedPositions = 0;
 		endPosition = 0;
 	}
@@ -92,7 +92,7 @@ public final class RushiTokenizer extends Tokenizer {
 	public final void end() throws IOException {
 		super.end();
 		// set final offset
-		int finalOffset = correctOffset(this.endPosition+ _IKImplement.getLastUselessCharNum());
+		int finalOffset = correctOffset(this.endPosition+ segmenter.getLastUselessCharNum());
 		offsetAtt.setOffset(finalOffset, finalOffset);
 		posIncrAtt.setPositionIncrement(posIncrAtt.getPositionIncrement() + skippedPositions);
 	}
