@@ -25,10 +25,24 @@ public class SurrogatePairHelper {
         return result.toArray(new String[0]);
     }
 
+    /**
+     * 判断一个字符串是否是一个单一的Surrogate Pair
+     * @param s
+     * @return
+     */
     public static boolean isSingleSurrogatePair(String s) {
         if (s.length() != 2) {
             return false;
         }
         return Character.isHighSurrogate(s.charAt(0)) && Character.isLowSurrogate(s.charAt(1));
+    }
+
+    /**
+     * 判断一个字符串是否是一个单一逻辑字符（一个char或者一对由两个char组成的Surrogate Pair）
+     * @param s
+     * @return
+     */
+    public static boolean isSingleLogicChar(String s) {
+        return s.length() == 1 || isSingleSurrogatePair(s);
     }
 }
