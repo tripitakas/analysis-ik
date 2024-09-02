@@ -2,6 +2,8 @@ package com.infinilabs.ik.elasticsearch;
 
 import net.tripitakas.ik.elasticsearch.SingleCharAnalyzerProvider;
 import net.tripitakas.ik.elasticsearch.SingleCharTokenizerFactory;
+import net.tripitakas.ik.elasticsearch.RushiAnalyzerProvider;
+import net.tripitakas.ik.elasticsearch.RushiTokenizerFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.elasticsearch.index.analysis.AnalyzerProvider;
 import org.elasticsearch.index.analysis.TokenizerFactory;
@@ -24,7 +26,9 @@ public class AnalysisIkPlugin extends Plugin implements AnalysisPlugin {
 
         extra.put("ik_smart", IkTokenizerFactory::getIkSmartTokenizerFactory);
         extra.put("ik_max_word", IkTokenizerFactory::getIkTokenizerFactory);
-        extra.put("rs_char", SingleCharTokenizerFactory::getRushiCharTokenizerFactory);
+        extra.put("rs_char", SingleCharTokenizerFactory::getSingleCharTokenizerFactory);
+        extra.put("rs_smart", RushiTokenizerFactory::getRushiSmartTokenizerFactory);
+        extra.put("rs_max_word", RushiTokenizerFactory::getRushiTokenizerFactory);
         return extra;
     }
 
@@ -35,6 +39,8 @@ public class AnalysisIkPlugin extends Plugin implements AnalysisPlugin {
         extra.put("ik_smart", IkAnalyzerProvider::getIkSmartAnalyzerProvider);
         extra.put("ik_max_word", IkAnalyzerProvider::getIkAnalyzerProvider);
         extra.put("rs_char", SingleCharAnalyzerProvider::getSingleCharAnalyzerProvider);
+        extra.put("rs_smart", RushiAnalyzerProvider::getRushiSmartAnalyzerProvider);
+        extra.put("rs_max_word", RushiAnalyzerProvider::getRushiAnalyzerProvider);
         return extra;
     }
 

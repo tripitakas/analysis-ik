@@ -18,7 +18,7 @@ public class SingleCharTokenizerFactory extends AbstractTokenizerFactory {
   }
 
 
-  public static SingleCharTokenizerFactory getRushiCharTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
+  public static SingleCharTokenizerFactory getSingleCharTokenizerFactory(IndexSettings indexSettings, Environment env, String name, Settings settings) {
       return new SingleCharTokenizerFactory(indexSettings,env, name, settings);
   }
 
