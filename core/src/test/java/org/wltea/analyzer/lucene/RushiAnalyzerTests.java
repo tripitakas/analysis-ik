@@ -75,14 +75,14 @@ public class RushiAnalyzerTests {
     {
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
         List<Term> values = Arrays.asList(tokenizeAsTerms(cfg, "\uDB84\uDD2E中华人民共和国国歌"));
-        assertEveryElementUnique(values);
+        //每一个元素都是唯一的
+        assert  new HashSet<Term>(values).size()== values.size();
+        //offset的值是递增的
+        for (int i = 1; i < values.size(); i++) {
+            assert values.get(i).getOffset() >= values.get(i-1).getOffset();
+        }
     }
 
-    //每一个元素都是唯一的
-    static void assertEveryElementUnique(List<Term> terms)
-    {
-        assert  new HashSet<Term>(terms).size()==terms.size();
-    }
 
     static String[] tokenize(Configuration configuration, String s)
     {
