@@ -5,8 +5,8 @@ import org.wltea.analyzer.help.SurrogatePairHelper;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Comparator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 
 public class RushiSegmenter {
@@ -27,6 +27,7 @@ public class RushiSegmenter {
     public synchronized Lexeme next()throws IOException {
         if(isFirstNext)
         {
+            //一次性分完，放到lexemeQueue中，再用next一个一个取出来
             isFirstNext = false;
             Set<Lexeme> lexemeSet = new java.util.HashSet<Lexeme>();
             Lexeme next;
@@ -52,11 +53,7 @@ public class RushiSegmenter {
             //把lexemeSet中的内容按照offset升序排序，然后放到lexemeQueue中
             lexemeQueue.clear();
             lexemeQueue.addAll(lexemeSet);
-            java.util.Collections.sort(lexemeQueue, new java.util.Comparator<Lexeme>() {
-                public int compare(Lexeme o1, Lexeme o2) {
-                    return o1.getBegin()-o2.getBegin();
-                }
-            });
+            java.util.Collections.sort(lexemeQueue, Comparator.comparingInt(Lexeme::getBegin));
         }
         return lexemeQueue.poll();
     }
