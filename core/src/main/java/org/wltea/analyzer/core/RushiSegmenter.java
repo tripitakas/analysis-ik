@@ -53,7 +53,7 @@ public class RushiSegmenter {
             //把lexemeSet中的内容按照offset升序排序，然后放到lexemeQueue中
             lexemeQueue.clear();
             lexemeQueue.addAll(lexemeSet);
-            java.util.Collections.sort(lexemeQueue, Comparator.comparingInt(Lexeme::getBegin));
+            lexemeQueue.sort(Comparator.comparingInt(Lexeme::getBegin));
         }
         return lexemeQueue.poll();
     }
