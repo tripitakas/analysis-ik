@@ -80,6 +80,10 @@ public class RushiAnalyzerTests {
         //offset的值是递增的
         for (int i = 1; i < values.size(); i++) {
             assert values.get(i).getOffset() >= values.get(i-1).getOffset();
+            if(values.get(i).getOffset() == values.get(i-1).getOffset())
+            {
+                assert values.get(i).getLength() <= values.get(i-1).getLength();
+            }
         }
     }
 

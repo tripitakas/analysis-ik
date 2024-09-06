@@ -50,10 +50,10 @@ public class RushiSegmenter {
                     }
                 }
             }
-            //把lexemeSet中的内容按照offset升序排序，然后放到lexemeQueue中
+            //把lexemeSet中的内容按照offset升序排序，对于offset相同的项再按照getLength降序排列，然后放到lexemeQueue中
             lexemeQueue.clear();
             lexemeQueue.addAll(lexemeSet);
-            lexemeQueue.sort(Comparator.comparingInt(Lexeme::getBegin));
+            lexemeQueue.sort(Comparator.comparingInt(Lexeme::getBegin).thenComparing(Comparator.comparingInt(Lexeme::getLength).reversed()));
         }
         return lexemeQueue.poll();
     }
