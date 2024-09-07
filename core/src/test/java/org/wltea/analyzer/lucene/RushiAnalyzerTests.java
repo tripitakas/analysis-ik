@@ -8,6 +8,11 @@ import org.junit.Test;
 import org.wltea.analyzer.TestUtils;
 import org.wltea.analyzer.cfg.Configuration;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class RushiAnalyzerTests {
@@ -70,6 +75,7 @@ public class RushiAnalyzerTests {
         assert values.contains("歌");
     }
 
+
     @Test
     public void tokenizeCase2_max_word_then_checkTermInfo_correctly()
     {
@@ -80,6 +86,38 @@ public class RushiAnalyzerTests {
         //offset的值是递增的
         for (int i = 1; i < values.size(); i++) {
             assert values.get(i).getOffset() >= values.get(i-1).getOffset();
+            //offset相同的则按照Length降序排列
+            if(values.get(i).getOffset() == values.get(i-1).getOffset())
+            {
+                assert values.get(i).getLength() <= values.get(i-1).getLength();
+            }
+        }
+    }
+
+    private static String readAllText(InputStream inputStream) throws IOException {
+        StringBuilder content = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append("\n");
+            }
+        }
+        return content.toString();
+    }
+
+    @Test
+    public void tokenize_longText_max_word_correctly() throws IOException {
+        Configuration cfg = TestUtils.createFakeConfigurationSub(false);
+        java.io.InputStream inputStream = Files.newInputStream(Paths.get("d:/1.txt"));
+        // Read file content
+        String fileContent = readAllText(inputStream);
+        List<Term> values = Arrays.asList(tokenizeAsTerms(cfg, fileContent));
+        //每一个元素都是唯一的
+        assert  new HashSet<Term>(values).size()== values.size();
+        //offset的值是递增的
+        for (int i = 1; i < values.size(); i++) {
+            assert values.get(i).getOffset() >= values.get(i-1).getOffset();
+            //offset相同的则按照Length降序排列
             if(values.get(i).getOffset() == values.get(i-1).getOffset())
             {
                 assert values.get(i).getLength() <= values.get(i-1).getLength();
