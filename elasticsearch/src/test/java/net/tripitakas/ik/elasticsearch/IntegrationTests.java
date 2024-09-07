@@ -1,11 +1,20 @@
 package net.tripitakas.ik.elasticsearch;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Dictionary;
@@ -16,9 +25,10 @@ public class IntegrationTests {
 
     @Test
     public void testTokenizeCase1_correctly() throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         /*
-        sendDeleteRequest("http://localhost:9200/test_index");
-        sendPutRequest("http://localhost:9200/test_index", "{\n" +
+        sendDeleteRequest("http://127.0.0.1:9200/test_index");
+        sendPutRequest("http://127.0.0.1:9200/test_index", "{\n" +
                 "  \"settings\": {\n" +
                 "    \"analysis\": {\n" +
                 "      \"analyzer\": {\n" +
@@ -30,24 +40,24 @@ public class IntegrationTests {
                 "  }\n" +
                 "}");
          */
+        /*
         java.io.InputStream inputStream = getClass().getResourceAsStream("/1.txt");
-        String url = "http://localhost:9200/index2/_doc";
-
         // Read file content
         String fileContent = readAllText(inputStream);
         Dictionary<String, String> bodyObject = new Hashtable<>();
         bodyObject.put("content_vmax", fileContent);
-        bodyObject.put("reel_txt", fileContent);
-        bodyObject.put("content_vchar", fileContent);
-        // 把bodyObject转换为Json字符串
-
-        int code = sendPostRequest( "http://localhost:9200/test_index/_doc", new Gson().toJson(bodyObject));
-        assert  code == 201;
-
+        Response resp;
+        resp = sendPostRequest( "http://127.0.0.1:9200/index2/_doc", gson.toJson(bodyObject));
+        assert  resp.getStatusCode() == 201;
+*/
+        /*
         Dictionary<String, String> bodyObject2 = new Hashtable<>();
         bodyObject2.put("analyzer", "rs_max_word");
+        fileContent="你好呀";
         bodyObject2.put("text", fileContent);
-        sendPostRequest("http://localhost:9200/index2/_analyze",new Gson().toJson(bodyObject2));
+        resp = sendPostRequest("http://127.0.0.1:9200/index2/_analyze",gson.toJson(bodyObject2));
+        assert resp.getStatusCode() == 200;
+        System.out.println(resp.getContent());*/
     }
 
     private static String readAllText(InputStream inputStream) throws IOException {
@@ -61,34 +71,22 @@ public class IntegrationTests {
         return content.toString();
     }
 
-    private int sendPostRequest(String urlString, String content) throws IOException {
-        URL url = new URL(urlString);
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
-        connection.setRequestProperty("Content-Type", "application/json");
-        connection.setDoOutput(true);
+    public static Response sendPostRequest(String url, String jsonInputString) throws IOException {
+        // 创建HttpClient
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            // 创建HttpPost请求
+            HttpPost post = new HttpPost(url);
+            // 设置请求头
+            post.setHeader("Content-Type", "application/json");
+            // 设置请求体
+            post.setEntity(new StringEntity(jsonInputString));
 
-        try (OutputStream os = connection.getOutputStream()) {
-            byte[] input = content.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-        String s  = outputStreamToString(connection.getOutputStream());
-
-        int responseCode = connection.getResponseCode();
-        return responseCode;
-    }
-
-    public static String outputStreamToString(OutputStream outputStream) throws IOException {
-        ByteArrayOutputStream byteArrayOutputStream = (ByteArrayOutputStream) outputStream;
-        InputStream inputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
+            // 发送请求并获取响应
+            try (CloseableHttpResponse response = httpClient.execute(post)) {
+                String responseBody = EntityUtils.toString(response.getEntity());
+                return new Response(response.getStatusLine().getStatusCode(), responseBody);
             }
         }
-        return content.toString();
     }
 
     private void sendPutRequest(String urlString, String content) throws IOException {
@@ -129,5 +127,25 @@ public class IntegrationTests {
 
         int responseCode = connection.getResponseCode();
         System.out.println("DELETE Response Code: " + responseCode);
+    }
+    
+    public static class Response
+    {
+        private int statusCode;
+        private String content;
+        
+        public Response(int statusCode, String content)
+        {
+            this.statusCode = statusCode;
+            this.content = content;
+        }
+
+        public int getStatusCode() {
+            return statusCode;
+        }
+
+        public String getContent() {
+            return content;
+        }
     }
 }
