@@ -50,7 +50,7 @@ public class RushiSegmenter implements IRootSegmenter {
                     }
                 }
             }
-            //把lexemeSet中的内容按照BeginPosition升序排序，对于offset相同的项再按照EndPosition降序排列，然后放到lexemeQueue中
+            //按照ES的要求：把lexemeSet中的内容按照BeginPosition升序排序，对于offset相同的项再按照EndPosition降序排列，然后放到lexemeQueue中
             lexemeQueue.clear();
             lexemeQueue.addAll(lexemeSet);
             lexemeQueue.sort(Comparator.comparingInt(Lexeme::getBeginPosition).thenComparing(Comparator.comparingInt(Lexeme::getEndPosition).reversed()));

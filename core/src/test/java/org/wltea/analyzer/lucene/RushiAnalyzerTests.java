@@ -94,23 +94,11 @@ public class RushiAnalyzerTests {
         }
     }
 
-    private static String readAllText(InputStream inputStream) throws IOException {
-        StringBuilder content = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                content.append(line).append("\n");
-            }
-        }
-        return content.toString();
-    }
-
+    // ElasticSearch 要求Term按照offset升序排列，如果offset相同则按照length降序排序
     @Test
     public void tokenize_longText_max_word_correctly() throws IOException {
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
-        java.io.InputStream inputStream = Files.newInputStream(Paths.get("d:/1.txt"));
-        // Read file content
-        String fileContent = readAllText(inputStream);
+        String fileContent = "\uDB84\uDD2E中华人民共和国国歌国歌\n\uDB84\uDD2E中华人民共和国国歌国歌\r\n你好你好我好\uDB84\uDD2E\r\n阿弥陀佛";
         List<Term> values = Arrays.asList(tokenizeAsTerms(cfg, fileContent));
         //每一个元素都是唯一的
         assert  new HashSet<Term>(values).size()== values.size();
