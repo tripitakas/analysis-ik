@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class RushiSegmenter {
+public class RushiSegmenter implements IRootSegmenter {
     private final IKSegmenter ikSegmenter;
     private boolean isFirstNext = true;
     private final LinkedList<Lexeme> lexemeQueue = new LinkedList<Lexeme>();
