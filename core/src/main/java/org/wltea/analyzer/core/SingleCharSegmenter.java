@@ -13,7 +13,7 @@ import java.util.List;
  * 考虑Surrogate Pair的单字符分词器，一个Surrogate Pair是一个Unicode字符，由两个16位的char组成。
  *
  */
-public final class SingleCharSegmenter {
+public final class SingleCharSegmenter implements IRootSegmenter{
     //字符窜reader
     private Reader input;
     //分词器上下文
