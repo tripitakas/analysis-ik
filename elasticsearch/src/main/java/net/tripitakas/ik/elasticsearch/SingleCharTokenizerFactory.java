@@ -9,6 +9,9 @@ import org.elasticsearch.index.analysis.AbstractTokenizerFactory;
 import org.wltea.analyzer.cfg.Configuration;
 import org.wltea.analyzer.lucene.SingleCharTokenizer;
 
+/**
+ * 把每个字单独分出来的分词器工厂类
+ */
 public class SingleCharTokenizerFactory extends AbstractTokenizerFactory {
   private Configuration configuration;
 

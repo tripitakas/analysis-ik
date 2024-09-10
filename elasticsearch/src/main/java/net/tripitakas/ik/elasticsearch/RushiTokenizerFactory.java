@@ -1,7 +1,6 @@
 package net.tripitakas.ik.elasticsearch;
 
 import com.infinilabs.ik.elasticsearch.ConfigurationSub;
-import com.infinilabs.ik.elasticsearch.IkTokenizerFactory;
 import org.apache.lucene.analysis.Tokenizer;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.env.Environment;
