@@ -9,6 +9,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Set;
 
+/**
+ * 在IKAnalyzer的基础上，增加了对单字分词的支持
+ */
 public class RushiSegmenter implements IRootSegmenter {
     private final IKSegmenter ikSegmenter;
     private boolean isFirstNext = true;

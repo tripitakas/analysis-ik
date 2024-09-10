@@ -9,10 +9,6 @@ import org.wltea.analyzer.TestUtils;
 import org.wltea.analyzer.cfg.Configuration;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class RushiAnalyzerTests {
