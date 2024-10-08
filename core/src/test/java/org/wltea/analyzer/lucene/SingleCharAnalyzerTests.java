@@ -7,7 +7,12 @@ import org.junit.Test;
 import org.wltea.analyzer.TestUtils;
 import org.wltea.analyzer.cfg.Configuration;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SingleCharAnalyzerTests {
     @Test
@@ -22,6 +27,27 @@ public class SingleCharAnalyzerTests {
         assert values[3].equals("龙");
         assert values[4].equals("麟");
         assert values[5].equals("凤");
+    }
+
+    @Test
+    public void temp()
+    {
+        Configuration cfg = TestUtils.createFakeConfigurationSub(false);
+        String allText = readAllText("d:/JS1671_025.txt");
+        long countInRaw = allText.chars().filter(x -> x == '一').count();
+        String[] values = tokenize(cfg, allText);
+        long count = Arrays.stream(values).filter(x -> x.equals("一")).count();
+        assert countInRaw == count;
+    }
+
+    //读取一个文本文件的全部内容到一个字符串
+    public static String readAllText(String path)
+    {
+        try {
+            return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

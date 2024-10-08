@@ -121,7 +121,7 @@ class AnalyzeContext {
     		readCount = reader.read(segmentBuff);
 			this.lastUselessCharNum = 0;
     	}else{
-    		int offset = this.available - this.cursor;
+    		int offset = this.available - this.cursor - 1;
     		if(offset > 0){
     			//最近一次读取的>最近一次处理的，将未处理的字串拷贝到segmentBuff头部
     			System.arraycopy(this.segmentBuff , this.cursor , this.segmentBuff , 0 , offset);
