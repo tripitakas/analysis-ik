@@ -1,8 +1,5 @@
 package org.wltea.analyzer.core;
 
-import org.wltea.analyzer.dic.Dictionary;
-import org.wltea.analyzer.dic.Hit;
-
 import java.util.Optional;
 
 /**
@@ -61,11 +58,8 @@ class SurrogatePairSegmenter implements ISegmenter {
         }
 
         if (context.isBufferConsumed() && this.highSurrogate.isPresent()) {
-            // Output the high surrogate as a single character lexeme
-            outputSingleCharLexeme(context, this.start);
-            this.highSurrogate = Optional.empty();
-            this.start = -1;
-            this.end = -1;
+            // Save the high surrogate to combine it with the next low surrogate as a lexeme
+            context.lockBuffer(SEGMENTER_NAME);
         }
     }
 
