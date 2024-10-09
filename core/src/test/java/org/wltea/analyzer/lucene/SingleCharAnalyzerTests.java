@@ -7,7 +7,10 @@ import org.junit.Test;
 import org.wltea.analyzer.TestUtils;
 import org.wltea.analyzer.cfg.Configuration;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -29,25 +32,36 @@ public class SingleCharAnalyzerTests {
         assert values[5].equals("凤");
     }
 
-    @Test
-    public void temp()
+    String readResourceText(String path)
     {
+        try {
+            try (InputStream in = this.getClass().getResourceAsStream(path);
+                 InputStreamReader reader = new InputStreamReader(in, StandardCharsets.UTF_8);
+                 ) {
+                StringBuilder sb = new StringBuilder();
+                char[] buffer = new char[1024];
+                int len;
+                while ((len = reader.read(buffer)) != -1) {
+                    sb.append(buffer, 0, len);
+                }
+                return sb.toString();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    public void processo_longtext_correctly()
+    {
+        //IK对于处理长文本有一个bug，也就是用rs_char分出来的词每隔4096个就会多一个字符，
+        //这个测试用例用来确保这个bug被修复
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
-        String allText = readAllText("d:/JS1671_025.txt");
+        String allText = readResourceText("/JS1671_025.txt");
         long countInRaw = allText.chars().filter(x -> x == '一').count();
         String[] values = tokenize(cfg, allText);
         long count = Arrays.stream(values).filter(x -> x.equals("一")).count();
         assert countInRaw == count;
-    }
-
-    //读取一个文本文件的全部内容到一个字符串
-    public static String readAllText(String path)
-    {
-        try {
-            return new String(Files.readAllBytes(Paths.get(path)), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
