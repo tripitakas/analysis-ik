@@ -1,15 +1,12 @@
 package org.wltea.analyzer.core;
 
 import org.wltea.analyzer.cfg.Configuration;
-
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 如是基于IKSegmenter改造，只是把CJKSegmenter、QuantifierSegmenter删除
- * todo: 提交PR，让IKSegmenter为非final类，并且把loadSegmenters搞成虚方法，这样我们这个类只要继承IKSegmenter即可
  * 考虑Surrogate Pair的单字符分词器，一个Surrogate Pair是一个Unicode字符，由两个16位的char组成。
  *
  */
@@ -24,6 +21,8 @@ public final class SingleCharSegmenter implements IRootSegmenter{
     private IKArbitrator arbitrator;
     private Configuration configuration;
 
+    private boolean isFirstNext = true;
+    private final LinkedList<Lexeme> lexemeQueue = new LinkedList<Lexeme>();
 
     /**
      * IK分词器构造函数
@@ -32,6 +31,7 @@ public final class SingleCharSegmenter implements IRootSegmenter{
     public SingleCharSegmenter(Reader input ,Configuration configuration){
         this.input = input;
         this.configuration = configuration;
+        isFirstNext = true;
         this.init();
     }
 
@@ -61,12 +61,32 @@ public final class SingleCharSegmenter implements IRootSegmenter{
         return segmenters;
     }
 
+    public synchronized Lexeme next()throws IOException{
+        if(isFirstNext)
+        {
+            //一次性分完，放到lexemeQueue中，再用next一个一个取出来
+            isFirstNext = false;
+            Set<Lexeme> lexemeSet = new java.util.HashSet<Lexeme>();
+            Lexeme next;
+            while((next = doNext())!=null)
+            {
+                lexemeSet.add(next);
+            }
+            //按照ES的要求：把lexemeSet中的内容按照BeginPosition升序排序，对于offset相同的项再按照EndPosition降序排列，然后放到lexemeQueue中
+            lexemeQueue.clear();
+            lexemeQueue.addAll(lexemeSet);
+            lexemeQueue.sort(Comparator.comparingInt(Lexeme::getBeginPosition).thenComparing(Comparator.comparingInt(Lexeme::getEndPosition).reversed()));
+        }
+        return lexemeQueue.poll();
+    }
+
+
     /**
      * 分词，获取下一个词元
      * @return Lexeme 词元对象
      * @throws java.io.IOException
      */
-    public synchronized Lexeme next()throws IOException{
+    private synchronized Lexeme doNext()throws IOException{
         Lexeme l = null;
         while((l = context.getNextLexeme()) == null ){
             /*
@@ -119,6 +139,7 @@ public final class SingleCharSegmenter implements IRootSegmenter{
         for(ISegmenter segmenter : segmenters){
             segmenter.reset();
         }
+        isFirstNext = true;
     }
 
     /**
