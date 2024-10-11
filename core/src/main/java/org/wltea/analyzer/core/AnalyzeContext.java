@@ -43,7 +43,7 @@ import org.wltea.analyzer.dic.Dictionary;
 class AnalyzeContext {
 	
 	//默认缓冲区大小
-	private static final int BUFF_SIZE = 1024*1024;//4096;
+	private static final int BUFF_SIZE = 4096;
 	//缓冲区耗尽的临界值
 	private static final int BUFF_EXHAUST_CRITICAL = 100;	
 	
@@ -115,10 +115,11 @@ class AnalyzeContext {
      * @throws java.io.IOException
      */
     int fillBuffer(Reader reader) throws IOException{
+		MultiPointReader multiPointReader = new MultiPointReader(reader);
     	int readCount = 0;
     	if(this.buffOffset == 0){
     		//首次读取reader
-    		readCount = reader.read(segmentBuff);
+    		readCount = multiPointReader.read(segmentBuff);
 			this.lastUselessCharNum = 0;
     	}else{
     		int offset = this.available - this.cursor;
@@ -136,6 +137,8 @@ class AnalyzeContext {
     	this.cursor = 0;
     	return readCount;
     }
+
+
 
     /**
      * 初始化buff指针，处理第一个字符
