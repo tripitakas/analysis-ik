@@ -103,7 +103,7 @@ public class SingleCharAnalyzerTests {
                         ","+typeAttribute.type();
                 sb.append(line).append("\n");
             }
-            Files.write(Paths.get("d:/dump.csv"), sb.toString().getBytes(StandardCharsets.UTF_8), new StandardOpenOption[]{StandardOpenOption.CREATE});
+            //Files.write(Paths.get("d:/dump.csv"), sb.toString().getBytes(StandardCharsets.UTF_8), new StandardOpenOption[]{StandardOpenOption.CREATE});
         }
         catch (Exception ex)
         {
