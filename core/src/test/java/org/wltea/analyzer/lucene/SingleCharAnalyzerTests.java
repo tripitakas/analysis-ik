@@ -11,7 +11,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -79,6 +78,7 @@ public class SingleCharAnalyzerTests {
         assert values[values.length-1].equals("二");
         assert values[values.length-2].equals("\uDB84\uDD2E");
         assert values[values.length-3].equals("一");
+        assert values.length == 4097;
     }
 
     /**
