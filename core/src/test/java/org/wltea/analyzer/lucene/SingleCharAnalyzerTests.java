@@ -52,17 +52,33 @@ public class SingleCharAnalyzerTests {
     }
 
     @Test
-    public void processo_longtext_correctly()
+    public void process_longtext_correctly()
     {
         //IK对于处理长文本有一个bug，也就是用rs_char分出来的词每隔4096个就会多一个字符，
         //这个测试用例用来确保这个bug被修复
         Configuration cfg = TestUtils.createFakeConfigurationSub(false);
         String allText = readResourceText("/JS1671_025.txt");
         long countInRaw = allText.chars().filter(x -> x == '一').count();
-        dumpTokenize(cfg,allText);
+        //dumpTokenize(cfg,allText);
         String[] values = tokenize(cfg, allText);
         long count = Arrays.stream(values).filter(x -> x.equals("一")).count();
         assert countInRaw == count;
+    }
+
+    @Test
+    public void process_multipoint_at_boundary_correctly()
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 4095; i++) {
+            sb.append("一");
+        }
+        sb.append("\uDB84\uDD2E");
+        sb.append("二");
+        Configuration cfg = TestUtils.createFakeConfigurationSub(false);
+        String[] values = tokenize(cfg, sb.toString());
+        assert values[values.length-1].equals("二");
+        assert values[values.length-2].equals("\uDB84\uDD2E");
+        assert values[values.length-3].equals("一");
     }
 
     /**
@@ -103,7 +119,7 @@ public class SingleCharAnalyzerTests {
                         ","+typeAttribute.type();
                 sb.append(line).append("\n");
             }
-            //Files.write(Paths.get("d:/dump.csv"), sb.toString().getBytes(StandardCharsets.UTF_8), new StandardOpenOption[]{StandardOpenOption.CREATE});
+            Files.write(Paths.get("dump.csv"), sb.toString().getBytes(StandardCharsets.UTF_8), new StandardOpenOption[]{StandardOpenOption.CREATE});
         }
         catch (Exception ex)
         {

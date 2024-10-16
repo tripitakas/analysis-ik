@@ -115,11 +115,10 @@ class AnalyzeContext {
      * @throws java.io.IOException
      */
     int fillBuffer(Reader reader) throws IOException{
-		MultiPointReader multiPointReader = new MultiPointReader(reader);
     	int readCount = 0;
     	if(this.buffOffset == 0){
     		//首次读取reader
-    		readCount = multiPointReader.read(segmentBuff);
+			readCount = reader.read(segmentBuff);
 			this.lastUselessCharNum = 0;
     	}else{
     		int offset = this.available - this.cursor;
@@ -129,7 +128,7 @@ class AnalyzeContext {
     			readCount = offset;
     		}
     		//继续读取reader ，以onceReadIn - onceAnalyzed为起始位置，继续填充segmentBuff剩余的部分
-    		readCount += multiPointReader.read(this.segmentBuff , offset , BUFF_SIZE - offset);
+			readCount += reader.read(this.segmentBuff , offset , BUFF_SIZE - offset);
     	}            	
     	//记录最后一次从Reader中读入的可用字符长度
     	this.available = readCount;
