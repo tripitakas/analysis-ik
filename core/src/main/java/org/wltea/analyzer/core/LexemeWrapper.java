@@ -39,7 +39,7 @@ public final class LexemeWrapper{
     }
 
     public int hashCode(){
-        return (this.getLexeme().getOffset()+this.getLexeme().getBegin())/37 + this.getLexeme().getLength();
+        return this.getLexeme().getOffset()+this.getLexeme().getBegin() + this.getLexeme().getLength();
     }
 
     public int getBeginPosition(){
