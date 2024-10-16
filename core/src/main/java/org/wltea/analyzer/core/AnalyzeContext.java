@@ -129,7 +129,7 @@ class AnalyzeContext {
     			readCount = offset;
     		}
     		//继续读取reader ，以onceReadIn - onceAnalyzed为起始位置，继续填充segmentBuff剩余的部分
-    		readCount += reader.read(this.segmentBuff , offset , BUFF_SIZE - offset);
+    		readCount += multiPointReader.read(this.segmentBuff , offset , BUFF_SIZE - offset);
     	}            	
     	//记录最后一次从Reader中读入的可用字符长度
     	this.available = readCount;
@@ -137,8 +137,6 @@ class AnalyzeContext {
     	this.cursor = 0;
     	return readCount;
     }
-
-
 
     /**
      * 初始化buff指针，处理第一个字符
