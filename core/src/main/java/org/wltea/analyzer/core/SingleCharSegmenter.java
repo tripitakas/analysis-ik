@@ -64,7 +64,7 @@ public final class SingleCharSegmenter implements IRootSegmenter{
     }
 
     public synchronized Lexeme next()throws IOException {
-        if(!isFirstNext)
+        if(isFirstNext)
         {
             //一次性分完，放到lexemeQueue中，再用next一个一个取出来
             isFirstNext = false;
