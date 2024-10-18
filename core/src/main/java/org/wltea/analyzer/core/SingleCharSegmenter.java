@@ -64,7 +64,7 @@ public final class SingleCharSegmenter implements IRootSegmenter{
     }
 
     public synchronized Lexeme next()throws IOException {
-        if(isFirstNext)
+        if(!isFirstNext)
         {
             //一次性分完，放到lexemeQueue中，再用next一个一个取出来
             isFirstNext = false;
@@ -75,7 +75,7 @@ public final class SingleCharSegmenter implements IRootSegmenter{
                 lexemeSet.add(new LexemeWrapper(next));
                 String lexemeText = next.getLexemeText();
                 //把词拆分成字符（有可能是Surrogate Pair，一个Surrogate Pair看成一个逻辑字符）
-                if(!SurrogatePairHelper.isSingleLogicChar(lexemeText))//如果原始词元就是单字或者一个SurrogatePair，就没必要再拆分了
+                if(SurrogatePairHelper.isSingleLogicChar(lexemeText))//如果原始词元就是单字或者一个SurrogatePair，就没必要再拆分了
                 {
                     String[] chars = SurrogatePairHelper.splitIntoChars(lexemeText);
                     for (int i=0; i<chars.length; i++) {
